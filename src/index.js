@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 // Import routes
 import contactRoutes from "./routes/contactRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -19,7 +20,8 @@ connectDb().then(() => {
 
 	// Routes
 	app.use("/api/contacts", contactRoutes);
-	app.use("/auth/users", userRoutes);
+	app.use("/users", userRoutes);
+	app.use("/auth",authRoutes)
 
 	// Error handling middleware
 	app.use(errorHandler);
