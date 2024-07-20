@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import expressAsyncHandler from "express-async-handler";
 
 const verifyToken = expressAsyncHandler(async (req, res, next) => {
-	console.log(req.cookies);
 	const { access } = req.cookies;
 
 	if (!access) {

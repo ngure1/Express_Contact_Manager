@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
-	getContacts,
+	getAllContacts,
+	getMyContacts,
 	createContact,
 	getContact,
 	updateContact,
@@ -10,8 +11,9 @@ import verifyToken from "../middleware/jwtCookieVerify.js";
 
 const contactRoutes = Router();
 
-contactRoutes.use(verifyToken)
-contactRoutes.route("/").get(getContacts).post(createContact);
+contactRoutes.use(verifyToken);
+contactRoutes.route("/").get(getMyContacts).post(createContact);
+contactRoutes.route("/all").get(getAllContacts)
 contactRoutes
 	.route("/:id")
 	.get(getContact)

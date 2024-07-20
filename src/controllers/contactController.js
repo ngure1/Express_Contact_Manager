@@ -13,9 +13,17 @@ const contactSchema = z.object({
 	phoneNumber: z.string({ required_error: "Phone Number is required" }),
 });
 
-const getContacts = expressAsyncHandler(async (req, res) => {
+const getAllContacts = expressAsyncHandler(async (req, res) => {
+	const contacts = await Contact.find().populate(
+		"owner",
+		"firstName lastName email"
+	);
+	res.status(200).json(contacts);
+});
+
+const getMyContacts = expressAsyncHandler(async (req, res) => {
 	const userId = req.user.id;
-	const contacts = await Contact.find({ user: userId });
+	const contacts = await Contact.find({ owner: userId });
 	res.status(200).json(contacts);
 });
 
@@ -92,4 +100,11 @@ const deleteContact = expressAsyncHandler(async (req, res) => {
 	});
 });
 
-export { getContacts, createContact, getContact, updateContact, deleteContact };
+export {
+	getAllContacts,
+	getMyContacts,
+	createContact,
+	getContact,
+	updateContact,
+	deleteContact,
+};
