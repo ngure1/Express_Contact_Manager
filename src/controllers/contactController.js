@@ -14,7 +14,8 @@ const contactSchema = z.object({
 });
 
 const getContacts = expressAsyncHandler(async (req, res) => {
-	const contacts = await Contact.find();
+	const userId = req.user.id;
+	const contacts = await Contact.find({ user: userId });
 	res.status(200).json(contacts);
 });
 
@@ -26,12 +27,10 @@ const createContact = expressAsyncHandler(async (req, res) => {
 		throw new Error(errorMessage);
 	}
 
-	const { firstName, lastName, email, phoneNumber } = result.data;
+	const userId = req.user.id;
 	const contact = await Contact.create({
-		firstName,
-		lastName,
-		email,
-		phoneNumber,
+		user: userId,
+		...result.data,
 	});
 	res.status(201).json(contact);
 });
@@ -48,21 +47,32 @@ const getContact = expressAsyncHandler(async (req, res) => {
 
 const updateContact = expressAsyncHandler(async (req, res) => {
 	const id = req.params.id;
-	const result = contactSchema.partial().safeParse(req.body); // partial to allow partial updates
+	const result = contactSchema.partial().safeParse(req.body);
 	if (!result.success) {
 		const errorMessages = result.error.errors.map((e) => e.message).join(", ");
 		res.status(400);
 		throw new Error(errorMessages);
 	}
 
-	const contact = await Contact.findByIdAndUpdate(id, result.data, {
-		new: true,
-	});
+	const contact = await Contact.findById(id);
 	if (!contact) {
 		res.status(404);
 		throw new Error("Contact not found");
 	}
-	res.status(200).json(contact);
+	const userId = req.user.id;
+	if (contact.user.toString() !== userId) {
+		res.status(403);
+		throw new Error("Cannot change a contact not registered under you");
+	}
+	const { firstName, lastName, email, phoneNumber } = result.data;
+	contact.firstName = firstName || contact.firstName;
+	contact.lastName = lastName || contact.lastName;
+	contact.email = email || contact.email;
+	contact.phoneNumber = phoneNumber || contact.phoneNumber;
+
+	const updatedContact = await contact.save();
+
+	res.status(200).json(updatedContact);
 });
 
 const deleteContact = expressAsyncHandler(async (req, res) => {
@@ -71,6 +81,11 @@ const deleteContact = expressAsyncHandler(async (req, res) => {
 	if (!contact) {
 		res.status(404);
 		throw new Error("Contact not found");
+	}
+	const userId = req.user.id;
+	if (contact.user.toString() !== userId) {
+		res.status(403);
+		throw new Error("Cannot change a contact not registered under you");
 	}
 	res.status(204).json({
 		message: `Contact ${id} deleted successfully`,
