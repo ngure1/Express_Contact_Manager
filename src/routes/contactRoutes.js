@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
 	getAllContacts,
 	getMyContacts,
+	getUserContacts,
 	createContact,
 	getContact,
 	updateContact,
@@ -13,7 +14,8 @@ const contactRoutes = Router();
 
 contactRoutes.use(verifyToken);
 contactRoutes.route("/").get(getMyContacts).post(createContact);
-contactRoutes.route("/all").get(getAllContacts)
+contactRoutes.route("/all").get(getAllContacts);
+contactRoutes.route("/:userId").get(getUserContacts)
 contactRoutes
 	.route("/:id")
 	.get(getContact)

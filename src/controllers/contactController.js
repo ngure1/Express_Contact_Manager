@@ -1,6 +1,7 @@
 import { Contact } from "../models/contact.js";
 import expressAsyncHandler from "express-async-handler";
 import { z } from "zod";
+import { User } from "../models/userModel.js";
 
 const contactSchema = z.object({
 	firstName: z
@@ -24,6 +25,20 @@ const getAllContacts = expressAsyncHandler(async (req, res) => {
 const getMyContacts = expressAsyncHandler(async (req, res) => {
 	const userId = req.user.id;
 	const contacts = await Contact.find({ owner: userId });
+	res.status(200).json(contacts);
+});
+
+const getUserContacts = expressAsyncHandler(async (req, res) => {
+	const { userId } = req.params;
+	const user = await User.findById(userId);
+	if (!user) {
+		res.status(404);
+		throw new Error("No user matches the user id provided");
+	}
+	const contacts = await Contact.find({ owner: userId }).populate(
+		"owner",
+		"firstName lastName email"
+	);
 	res.status(200).json(contacts);
 });
 
@@ -103,6 +118,7 @@ const deleteContact = expressAsyncHandler(async (req, res) => {
 export {
 	getAllContacts,
 	getMyContacts,
+	getUserContacts,
 	createContact,
 	getContact,
 	updateContact,
