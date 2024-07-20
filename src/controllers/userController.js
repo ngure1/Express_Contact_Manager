@@ -83,7 +83,6 @@ const usersLogin = expressAsyncHandler(async (req, res) => {
 		throw new Error("No user found registered under that email");
 	}
 
-	console.log(user);
 	const isPasswordsMatch = await bcrypt.compare(password, user.password);
 	if (!isPasswordsMatch) {
 		res.status(400);
@@ -100,19 +99,27 @@ const usersLogin = expressAsyncHandler(async (req, res) => {
 			expiresIn: "5m",
 		}
 	);
+
 	res.cookie("access", access, {
 		httpOnly: true,
-		expiresIn: 30000,
+		maxAge: 5 * 60 * 1000,
 		secure: true,
 	});
+
 	res.status(201).json({
 		access: access,
 	});
 });
 
 const usersMe = expressAsyncHandler(async (req, res) => {
-	res.json({
-		message: "Users me endpoint",
+	const user = req.user;
+	if (!user) {
+		res.status(401);
+		throw new Error("Authentication credentials were not provided");
+	}
+	res.status(200).json({
+		id: user.id,
+		email: user.email,
 	});
 });
 
