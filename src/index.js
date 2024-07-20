@@ -4,6 +4,7 @@ import { connectDb } from "./db/index.js";
 import errorHandler from "./middlewear/errorHandler.js";
 // import routes
 import { router } from "./routes/contactRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = e();
 const port = process.env.PORT;
@@ -19,7 +20,8 @@ connectDb().then(() => {
 
 	//routes
 	app.use("/api/contacts", router);
+	app.use("/auth/users", userRoutes);
 
 	//error handling middlewear
-	app.use(errorHandler)
+	app.use(errorHandler);
 });
