@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const contactSchema = new Schema(
 	{
-		user: {
+		owner: {
 			type: Schema.Types.ObjectId,
 			ref: "User",
 			required: true,

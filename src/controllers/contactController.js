@@ -29,7 +29,7 @@ const createContact = expressAsyncHandler(async (req, res) => {
 
 	const userId = req.user.id;
 	const contact = await Contact.create({
-		user: userId,
+		owner: userId,
 		...result.data,
 	});
 	res.status(201).json(contact);
@@ -60,7 +60,7 @@ const updateContact = expressAsyncHandler(async (req, res) => {
 		throw new Error("Contact not found");
 	}
 	const userId = req.user.id;
-	if (contact.user.toString() !== userId) {
+	if (contact.owner.toString() !== userId) {
 		res.status(403);
 		throw new Error("Cannot change a contact not registered under you");
 	}
@@ -83,7 +83,7 @@ const deleteContact = expressAsyncHandler(async (req, res) => {
 		throw new Error("Contact not found");
 	}
 	const userId = req.user.id;
-	if (contact.user.toString() !== userId) {
+	if (contact.owner.toString() !== userId) {
 		res.status(403);
 		throw new Error("Cannot change a contact not registered under you");
 	}
