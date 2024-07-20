@@ -2,7 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import { User } from "../models/userModel.js";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { generateAccessToken,generateRefreshToken } from "../utils/authTokens.js";
 
 const userRegisterSchema = z.object({
 	firstName: z.string({
@@ -89,25 +89,23 @@ const usersLogin = expressAsyncHandler(async (req, res) => {
 		throw new Error("You entered the wrong password");
 	}
 
-	const access = jwt.sign(
-		{
-			email: user.email,
-			id: user.id,
-		},
-		process.env.ACCESS_TOKEN_SECRET,
-		{
-			expiresIn: "5m",
-		}
-	);
+	const accessToken = generateAccessToken(user)
+	const refreshToken = generateAccessToken(user)
 
-	res.cookie("access", access, {
+	res.cookie("access", accessToken, {
 		httpOnly: true,
 		maxAge: 5 * 60 * 1000,
 		secure: true,
 	});
+	res.cookie("refresh", refreshToken, {
+		httpOnly: true,
+		maxAge: 15 * 24 * 60 * 60 * 1000,
+		secure: true,
+	});
 
 	res.status(201).json({
-		access: access,
+		refresh:refreshToken,
+		access: accessToken,
 	});
 });
 
