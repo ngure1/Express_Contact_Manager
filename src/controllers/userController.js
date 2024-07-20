@@ -2,6 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import { User } from "../models/userModel.js";
 import { z } from "zod";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userRegisterSchema = z.object({
 	firstName: z.string({
@@ -42,8 +43,8 @@ const usersRegister = expressAsyncHandler(async (req, res) => {
 
 	const hashedPassword = await bcrypt.hash(password, 10);
 	const user = await User.create({
-		password: hashedPassword,
 		...result.data,
+		password: hashedPassword,
 	});
 	if (!user) {
 		throw new Error("User not created");
@@ -61,8 +62,51 @@ const usersRegister = expressAsyncHandler(async (req, res) => {
 });
 
 const usersLogin = expressAsyncHandler(async (req, res) => {
-	res.json({
-		message: "Users login endpoint",
+	const result = userRegisterSchema
+		.pick({
+			email: true,
+			password: true,
+		})
+		.safeParse(req.body);
+
+	if (!result.success) {
+		const errorMessages = result.error.errors.map((e) => e.message).join(", ");
+		res.status(400);
+		throw new Error(errorMessages);
+	}
+
+	const { email, password } = result.data;
+
+	const user = await User.findOne({ email });
+	if (!user) {
+		res.status(400);
+		throw new Error("No user found registered under that email");
+	}
+
+	console.log(user);
+	const isPasswordsMatch = await bcrypt.compare(password, user.password);
+	if (!isPasswordsMatch) {
+		res.status(400);
+		throw new Error("You entered the wrong password");
+	}
+
+	const access = jwt.sign(
+		{
+			email: user.email,
+			id: user.id,
+		},
+		process.env.ACCESS_TOKEN_SECRET,
+		{
+			expiresIn: "5m",
+		}
+	);
+	res.cookie("access", access, {
+		httpOnly: true,
+		expiresIn: 30000,
+		secure: true,
+	});
+	res.status(201).json({
+		access: access,
 	});
 });
 
