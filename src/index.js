@@ -3,7 +3,7 @@ import "dotenv/config";
 import { connectDb } from "./db/index.js";
 import errorHandler from "./middlewear/errorHandler.js";
 // import routes
-import { router } from "./routes/contactRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
 const app = e();
@@ -19,7 +19,7 @@ connectDb().then(() => {
 	});
 
 	//routes
-	app.use("/api/contacts", router);
+	app.use("/api/contacts", contactRoutes);
 	app.use("/auth/users", userRoutes);
 
 	//error handling middlewear
