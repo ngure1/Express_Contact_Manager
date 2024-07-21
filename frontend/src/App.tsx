@@ -1,26 +1,52 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Home, Favourites } from "./pages/index";
+import {
+	BrowserRouter as Router,
+	Route,
+	Routes,
+	useLocation,
+} from "react-router-dom";
+import { Home, Favourites, Authentication } from "./pages/index";
 import Sidebar from "./components/Sidebar";
 import { ChakraProvider } from "@chakra-ui/react";
+
+const AppContent = () => {
+	const location = useLocation();
+	const isAuthPage = location.pathname === "/auth";
+
+	return (
+		<>
+			{!isAuthPage && <Sidebar />}
+			<div
+				className={
+					!isAuthPage
+						? "ml-[27%] sm:ml-[14%] border border-black min-h-screen p-3 bg-pink-200 rounded-md"
+						: "min-h-screen p-3"
+				}
+			>
+				<Routes>
+					<Route
+						path="/"
+						Component={Home}
+					/>
+					<Route
+						path="/favourites"
+						Component={Favourites}
+					/>
+					<Route
+						path="/auth"
+						Component={Authentication}
+					/>
+				</Routes>
+			</div>
+		</>
+	);
+};
 
 const App = () => {
 	return (
 		<main>
-			<ChakraProvider>
+			<ChakraProvider toastOptions={{ defaultOptions: { position: "top" } }}>
 				<Router>
-					<Sidebar />
-					<div className="ml-[27%] sm:ml-[14%] border border-black min-h-screen p-3 bg-pink-200 rounded-md">
-						<Routes>
-							<Route
-								path="/"
-								Component={Home}
-							></Route>
-							<Route
-								path="/favourites"
-								Component={Favourites}
-							></Route>
-						</Routes>
-					</div>
+					<AppContent />
 				</Router>
 			</ChakraProvider>
 		</main>
