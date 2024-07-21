@@ -3,6 +3,7 @@ import "dotenv/config";
 import { connectDb } from "./db/index.js";
 import errorHandler from "./middleware/errorHandler.js";
 import cookieParser from "cookie-parser";
+import cors from "cors"
 
 // Import routes
 import contactRoutes from "./routes/contactRoutes.js";
@@ -17,6 +18,9 @@ connectDb().then(() => {
 	// Common middleware
 	app.use(express.json());
 	app.use(cookieParser());
+	app.use(cors({
+		origin:"http://localhost:3000/"
+	}))
 
 	// Routes
 	app.use("/api/contacts", contactRoutes);
