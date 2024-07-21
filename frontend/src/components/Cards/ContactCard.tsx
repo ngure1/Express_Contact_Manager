@@ -4,6 +4,7 @@ import {
 	CardBody,
 	CardFooter,
 	IconButton,
+	Skeleton,
 } from "@chakra-ui/react";
 import { IoCallOutline } from "react-icons/io5";
 import { TbMessage } from "react-icons/tb";
@@ -18,13 +19,11 @@ const ContactCard = ({
 		<Card
 			display="flex"
 			flexDirection="row"
-            size="sm"
+			size="sm"
 			className="sm:max-w-[25rem]"
 		>
 			<CardBody className="flex gap-4 items-center">
-				<Avatar
-					name={firstName}
-				/>
+				<Avatar name={firstName} />
 				<div className="text-left">
 					<p className="text-lg">
 						{firstName} {lastName}
@@ -46,6 +45,14 @@ const ContactCard = ({
 				></IconButton>
 			</CardFooter>
 		</Card>
+	);
+};
+
+export const ContactCardSkeleton = () => {
+	return (
+	<Skeleton>
+		<ContactCard/>
+	</Skeleton>
 	);
 };
 
