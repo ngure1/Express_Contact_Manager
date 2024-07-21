@@ -1,6 +1,13 @@
+export interface User {
+	firstName: string;
+	lastName: string;
+	username?: string;
+	email: string;
+}
 export interface Contact {
-    firstName: string,
-    lastName: string,
-    phoneNumber:string,
-    email?:string,
+	owner?: Partial<User>;
+	firstName: string;
+	lastName: string;
+	phoneNumber: string;
+	email?: string;
 }
