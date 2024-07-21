@@ -18,7 +18,7 @@ const Links = ({ icon, text, to }: LinksProps) => {
 	return (
 		<Link
 			to={to}
-			className="flex flex-col sm:flex-row items-center gap-2 rounded-md py-4 px-5 w-full hover:bg-pink-100 transition"
+			className="flex flex-col sm:flex-row items-center gap-2 rounded-md py-4 w-full hover:border hover:border-blue-400 hover:pl-5 transition-all duration-500"
 		>
 			{icon}
 			<span>{text}</span>
@@ -71,7 +71,7 @@ const Sidebar = () => {
 	];
 
 	return (
-		<div className="fixed left-0 top-0 min-h-screen bg-pink-200 px-2 pt-5 rounded-md w-[13%] min-w-[6rem]">
+		<div className="fixed left-0 top-0 min-h-screen border border-blue-100 shadow-md px-8 pt-10 pb-12 w-[18%] min-w-[6rem] flex flex-col justify-between">
 			<div className="w-full flex items-center justify-center flex-col rounded-lg gap-2">
 				{links.map((link, index) => (
 					<Links
@@ -81,21 +81,22 @@ const Sidebar = () => {
 						to={link.to}
 					/>
 				))}
-				<Button
-					leftIcon={
-						<IoAdd
-							size={25}
-							className="sm:h-7 sm:w-7"
-						/>
-					}
-					variant="outline"
-					colorScheme="pink"
-					className="flex flex-col sm:flex-row"
-					onClick={openContactDialog}
-				>
-					Add Contact
-				</Button>
 			</div>
+			<Button
+				leftIcon={
+					<IoAdd
+						size={25}
+						className="sm:h-7 sm:w-7"
+					/>
+				}
+				variant="outline"
+				size="md"
+				colorScheme="blue"
+				className="flex flex-col sm:flex-row"
+				onClick={openContactDialog}
+			>
+				Add Contact
+			</Button>
 			{isContactDialogOpen && (
 				<Dialog
 					isOpen={isContactDialogOpen}

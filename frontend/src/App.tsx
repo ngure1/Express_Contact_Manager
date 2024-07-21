@@ -18,7 +18,7 @@ const AppContent = () => {
 			<div
 				className={
 					!isAuthPage
-						? "ml-[27%] sm:ml-[14%] min-h-screen p-3 rounded-md"
+						? "ml-[27%] sm:ml-[20%] min-h-screen p-3 rounded-md"
 						: "min-h-screen p-3"
 				}
 			>

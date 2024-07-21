@@ -24,7 +24,6 @@ const ContactCard = ({
 			<CardBody className="flex gap-4 items-center">
 				<Avatar
 					name={firstName}
-					bg="teal.500"
 				/>
 				<div className="text-left">
 					<p className="text-lg">
@@ -36,13 +35,13 @@ const ContactCard = ({
 			<CardFooter className="flex gap-4">
 				<IconButton
 					aria-label="Call Sage"
-					colorScheme="teal"
+					colorScheme="green"
 					variant="outline"
 					icon={<IoCallOutline size={25} />}
 				></IconButton>
 				<IconButton
 					aria-label="Call Sage"
-					colorScheme="teal"
+					colorScheme="blue"
 					icon={<TbMessage size={25} />}
 				></IconButton>
 			</CardFooter>
