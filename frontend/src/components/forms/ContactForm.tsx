@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { Input } from "@chakra-ui/react";
 import { FormControl, FormLabel, FormErrorMessage } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
+import axiosInstance from "../../axios";
 
 const contactSchema = z.object({
 	firstName: z
@@ -32,9 +34,16 @@ const ContactForm = () => {
 		resolver: zodResolver(contactSchema),
 	});
 
+	const toast = useToast();
+
 	const onSubmit = (data: ContactFormData) => {
-		console.log(data);
+		toast.promise(axiosInstance.post("/api/contacts", data), {
+			success: { title: "Contact Created", description: "Looks great" },
+			error: { title: "Contact Not Created", description: "Something wrong" },
+			loading: { title: "Creating your contact", description: "Please wait" },
+		});
 	};
+
 	return (
 		<form
 			onSubmit={handleSubmit(onSubmit)}
